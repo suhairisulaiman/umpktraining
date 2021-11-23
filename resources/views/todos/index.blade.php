@@ -14,7 +14,7 @@
                             <th>Title</th>
                             <th>Description</th>
                             <th>Created</th>
-                            <th>Action Kamen</th>
+                            <th>Action</th>
                         </thead>
                         <tbody>
                             @foreach ($todos as $todo)
@@ -25,6 +25,7 @@
                                     <td> {{ $todo->created_at->diffForHumans() }}</td>
                                     <td>
                                         <a class="btn btn-primary" href="/todos/{{ $todo->id }}">Show</a>
+                                        <a class="btn btn-success" href="/todos/{{ $todo->id }}/edit">Edit</a>
                                     </td>
                                 </tr>
                             @endforeach
