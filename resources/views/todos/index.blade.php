@@ -4,18 +4,23 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            @if(session()->has('message'))
+                <div class="alert {{ session()->get('type') }}">
+                    {{ session()->get('message') }}
+                </div>
+            @endif
             <div class="card">
-                <div class="card-header">{{ __('Todos Index') }}</div>
+                <div class="card-header">{{ __('Todo Index') }}</div>
 
                 <div class="card-body">
                     <table class="table table-responsive">
                         <thead>
                             <th>ID</th>
-                            <th>Name</th>
+                            <th>Title</th>
                             <th>Description</th>
                             <th>Created</th>
                             <th>Updated</th>
-                            <th>Creator</th>
+                            <th>Action</th>
                         </thead>
                         <tbody>
                             @foreach ($todos as $todo)
@@ -25,7 +30,6 @@
                                     <td> {{ $todo->description }}</td>
                                     <td> {{ $todo->created_at->diffForHumans() }}</td>
                                     <td> {{ $todo->updated_at->diffForHumans() }}</td>
-                                    <td> {{ $todo->user->name}}</td>
                                     <td>
                                         <a class="btn btn-primary" href="/todos/{{ $todo->id }}">Show</a>
                                         <a class="btn btn-success" href="/todos/{{ $todo->id }}/edit">Edit</a>
@@ -34,7 +38,8 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table> 
+                    </table>
+                    {{ $todos->links() }}
                 </div>
             </div>
         </div>

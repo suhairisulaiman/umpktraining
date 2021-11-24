@@ -8,7 +8,6 @@
                 <div class="card-header">{{ __('Todos Show') }}</div>
 
                 <div class="card-body">
-                    <form action="" method="POST">
                         <div class="form-group">
                             <label>Title</label>
                             <input type="text" value="{{ $todo->title }}" name="title" class="form-control" placeholder="Please enter todo title"readonly>
@@ -18,8 +17,15 @@
                             <textarea name="description" class="form-control" readonly>{{ $todo->description }}</textarea>
                         </div>
 
-                    </form>
-
+                        @if($todo->attachment)
+                            <a
+                                target="blank"
+                                href="{{ $todo->attachment_url }}"
+                                class="btn bt-link">
+                                Open this attachment
+                            </a>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Todo;
+use File;
+use Storage;
 
 class TodoController extends Controller
 {
@@ -16,9 +18,9 @@ class TodoController extends Controller
     public function index()
     {
         // query list of todos from db
-        $todos = Todo::all();
-        $user = auth()->user();
-        $todos = $user->todos;
+        $todos = Todo::paginate(10);
+        // $user = auth()->user();
+        // $todos = $user->todos;
 
         // return to view - resources/views/todos/index.blade.php
         return view('todos.index', compact('todos'));
@@ -39,9 +41,23 @@ class TodoController extends Controller
         $todo->user_id = auth()->user()->id;
         $todo->save();
 
-        // return todos index
-        return redirect()->to('/todos');
+        if($request->hasFile('attachment')){
+            //rename
+            $filename = $todo->id.'-'.date("Y-m-d").'.'.$request->attachment->getClientOriginalExtension();
 
+            //store at file storage
+            Storage::disk('public')->put($filename, File::get($request->attachment));
+    
+            //update row on db
+            $todo->attachment = $filename;
+            $todo->save();
+        }
+
+        // return todos index
+        return redirect()->to('/todos')->with([
+            'type' => 'alert-primary',
+            'message' => 'Successfuly store your todo!'
+        ]);
     }
 
     public function show(Todo $todo)
@@ -60,16 +76,26 @@ class TodoController extends Controller
         $todo->description = $request->description;
         $todo->save();
 
-        return redirect()->to('/todos');
+        return redirect()->to('/todos')->with([
+            'type' => 'alert-success',
+            'message' => 'Successfuly update your todo!'
+        ]);
     }
 
     public function delete(Todo $todo)
     {
+        if($todo->attachment){
+            Storage::disk('public')->delete($todo->attachment);
+        }
+
         //delete from table using model
         $todo->delete();
 
         //return to todo index
-        return redirect()->to('/todos');
+        return redirect()->to('/todos')->with([
+            'type' => 'alert-danger',
+            'message' => 'Successfuly deleted your todo!'
+        ]);
 
     }
 }

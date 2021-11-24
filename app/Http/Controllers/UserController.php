@@ -10,7 +10,7 @@ class UserController extends Controller
     public function index()
     {
         // query list of user from db
-        $users = User::all();
+        $users = User::paginate(10);
 
         // return to view - resources/views/users/index.blade.php
         return view('users.index', compact('users'));
