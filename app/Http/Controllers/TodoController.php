@@ -15,10 +15,19 @@ class TodoController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        if($request->keyword){
+            $user = auth()->user();
+            $todos = $user->todos()->where('title','LIKE','%'.$request->keyword.'%')->paginate(3);
+        }else{
+            $user = auth()->user();
+            $todos = $user->todos()->paginate(3);
+        
+        }
+
         // query list of todos from db
-        $todos = Todo::paginate(10);
+        $todos = Todo::paginate(3);
         // $user = auth()->user();
         // $todos = $user->todos;
 
